@@ -1,0 +1,32 @@
+# don't ever lint node_modules
+node_modules
+
+# don't lint build output (make sure it's set to your correct build folder name)
+build
+
+# don't lint nyc coverage output
+coverage
+
+.eslintrc.js
+
+.babel.config.js
+
+.prettierrc.js
+
+lint-staged.config.js
+
+next.config.mjs
+
+tailwind.config.ts
+
+tailwind.config.js
+
+postcss.config.js
+
+.eslintrc.js
+
+tsconfig.json
+
+process.d.ts
+
+next-auth.d.ts
