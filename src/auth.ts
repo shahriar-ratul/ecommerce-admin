@@ -119,7 +119,7 @@ export const authConfig = {
                         },
                     });
 
-                    console.log(res.data);
+                    // console.log(res.data);
 
                     // add time plus expiresIn to get the expiration time
                     const time = Number(res.data.data.expiresIn) + Number(new Date().getTime());
@@ -151,7 +151,7 @@ export const authConfig = {
 
                 } catch (error: any) {
 
-                    console.log(error.response.data);
+                    // console.log(error.response.data);
                     let message = "An error occurred while logging in. Please try again later.";
 
                     if (error.response.data.message && typeof error.response.data.message === "string") {

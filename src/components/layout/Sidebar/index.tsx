@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type SidebarNavItem } from "@/types";
 import { mainRoutes } from "@/constants/route";
-import { ChevronDown } from "lucide-react";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { ChevronDown, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -19,7 +18,7 @@ export default function Sidebar({ className }: SidebarProps) {
   return (
     <div className={cn("flex h-full w-[240px] flex-col top-0", className)}>
       <div className="flex h-16 w-full items-center justify-center gap-2 border-b text-lg font-medium">
-        <GitHubLogoIcon className="h-9 w-9" /> Hello-Admin
+        <User className="h-9 w-9" /> Hello-Admin
       </div>
       <div className="py-4">
         {mainRoutes.map((item, idx) => {
@@ -37,6 +36,13 @@ const MenuItem = ({ item }: { item: SidebarNavItem }) => {
   const toggleSubMenu = () => {
     setSubMenuOpen(!subMenuOpen);
   };
+
+  useEffect(() => {
+    if (pathname.includes(item.path ?? "")) {
+      setSubMenuOpen(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="">
