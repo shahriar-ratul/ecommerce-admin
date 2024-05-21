@@ -142,23 +142,6 @@ export default function UserTable() {
     },
 
     {
-      accessorKey: "isVerified",
-      header: "isVerified",
-      cell: ({ row }) => {
-        return (
-          <div className="flex items-center">
-            <span className="ml-2">
-              {row.original.isVerified ? (
-                <Badge variant="success">Verified</Badge>
-              ) : (
-                <Badge variant="destructive">Unverified</Badge>
-              )}
-            </span>
-          </div>
-        );
-      }
-    },
-    {
       accessorKey: "isActive",
       header: "Status",
       cell: ({ row }) => {

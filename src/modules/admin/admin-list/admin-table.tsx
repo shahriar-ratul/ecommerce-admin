@@ -27,10 +27,11 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -39,26 +40,20 @@ import {
 } from "@radix-ui/react-icons";
 import Loader from "@/components/loader/loader";
 import { type AdminModel } from "@/schema/AdminSchema";
-import { Edit, MoreHorizontal, Trash } from "lucide-react";
+import { Edit, Eye, Trash } from "lucide-react";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger
 } from "@/components/ui/tooltip";
 import { AlertModal } from "@/components/modal/alert-modal";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "use-debounce";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 export default function AdminTable() {
   const [tableData, setTableData] = useState<AdminModel[]>([]);
@@ -72,12 +67,14 @@ export default function AdminTable() {
 
   const session = useSession();
 
-  const router = useRouter();
+  const [key, setKey] = useState(+new Date());
+  const [status, setStatus] = useState<string | undefined>(undefined);
 
   // Search param
   const [page, setPage] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(10);
+  const [total, setTotal] = useState<number>(0);
 
   const [search, setSearch] = useState("");
   const [searchKey] = useDebounce(search, 500);
@@ -119,6 +116,8 @@ export default function AdminTable() {
               }
             }
           });
+          setActionType(null);
+          setSelectedRow(null);
         }
       } catch (error: any) {
         toast.error(error.response.data.message as string, {
@@ -201,6 +200,14 @@ export default function AdminTable() {
     },
 
     {
+      accessorKey: "firstName",
+      header: "firstName"
+    },
+    {
+      accessorKey: "lastName",
+      header: "lastName"
+    },
+    {
       accessorKey: "username",
       header: "Username"
     },
@@ -211,7 +218,7 @@ export default function AdminTable() {
     },
     {
       accessorKey: "phone",
-      header: "Phone"
+      header: "phone"
     },
     {
       accessorKey: "role",
@@ -276,55 +283,54 @@ export default function AdminTable() {
       header: "Actions",
       cell: ({ row }) => (
         <>
-          <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-10 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-6" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel className="text-gray-600 text-sm font-normal text-center">
-                Actions
-              </DropdownMenuLabel>
+          <div className="flex justify-center space-x-2">
+            <Tooltip>
+              <TooltipTrigger>
+                <Link
+                  href={`/user/admins/${row.original.id}`}
+                  className={cn(buttonVariants({ variant: "default" }))}
+                >
+                  <Eye className="h-4 w-4" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent className="bg-blue-500 text-white">
+                <p>View details</p>
+              </TooltipContent>
+            </Tooltip>
 
-              <DropdownMenuItem
-                onClick={() =>
-                  router.push(`/dashboard/admin/${row.original.id}`)
-                }
-              >
-                <Tooltip>
-                  <TooltipTrigger>
-                    <span className="flex">
-                      <Edit className="mr-2 h-4 w-4" /> Update
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-blue-500 text-white">
-                    <p>Update the details</p>
-                  </TooltipContent>
-                </Tooltip>
-              </DropdownMenuItem>
+            <Tooltip>
+              <TooltipTrigger>
+                <Link
+                  href={`/user/admins/${row.original.id}/edit`}
+                  className={cn(buttonVariants({ variant: "destructive" }))}
+                >
+                  <Edit className="h-4 w-4" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent className="bg-blue-500 text-white">
+                <p>Edit details</p>
+              </TooltipContent>
+            </Tooltip>
 
-              <DropdownMenuItem
-                onClick={() => {
-                  setOpen(true);
-                  setSelectedRow(row.original);
-                  setActionType("delete");
-                }}
-              >
-                <Tooltip>
-                  <TooltipTrigger>
-                    <span className="flex ">
-                      <Trash className="mr-2 h-4 w-4" /> Delete
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-blue-500 text-white">
-                    <p>Update the details</p>
-                  </TooltipContent>
-                </Tooltip>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            <Tooltip>
+              <TooltipTrigger>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    setOpen(true);
+                    setSelectedRow(row.original);
+                    setActionType("delete");
+                  }}
+                >
+                  <Trash className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+
+              <TooltipContent className="bg-blue-500 text-white">
+                <p>Delete </p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </>
       )
     }
@@ -345,7 +351,12 @@ export default function AdminTable() {
     manualFiltering: true
   });
 
-  const fetchData = async (page: number, limit: number, search: string) => {
+  const fetchData = async (
+    page: number,
+    limit: number,
+    search: string,
+    status: string | undefined
+  ) => {
     axios.defaults.baseURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     axios.defaults.headers.common["Authorization"] =
@@ -355,8 +366,18 @@ export default function AdminTable() {
       page = 1;
     }
 
+    let isActive = null;
+
+    if (status === "active") {
+      isActive = true;
+    }
+
+    if (status === "inactive") {
+      isActive = false;
+    }
+
     const { data } = await axios.get(
-      `/api/v1/admins?page=${page}&limit=${limit}&search=${search}`
+      `/api/v1/admins?page=${page}&limit=${limit}&search=${search}&isActive=${isActive}`
     );
 
     // const { data } = await axios.get(
@@ -370,12 +391,13 @@ export default function AdminTable() {
     boolean,
     any
   >({
-    queryKey: ["admins-list", pageIndex, pageSize, searchKey],
+    queryKey: ["admins-list", pageIndex, pageSize, searchKey, status],
     queryFn: async () => {
       const { data } = await fetchData(
         table.getState().pagination.pageIndex + 1,
         table.getState().pagination.pageSize,
-        searchKey
+        searchKey,
+        status
       );
 
       table.setState({
@@ -387,6 +409,8 @@ export default function AdminTable() {
       });
 
       setTotalPages(data.meta.pageCount as number);
+
+      setTotal(data.meta.total as number);
 
       setTableData(data.items as AdminModel[]);
       setPage(data.meta.page as number);
@@ -421,14 +445,45 @@ export default function AdminTable() {
             loading={loading}
           />
 
-          <Input
-            placeholder={`Search ...`}
-            value={search}
-            onChange={e => {
-              setSearch(e.target.value);
-            }}
-            className="w-full md:max-w-sm border-2 border-purple-500"
-          />
+          <div className="flex justify-start space-x-3">
+            <Input
+              placeholder={`Search ...`}
+              value={search}
+              onChange={e => {
+                setSearch(e.target.value);
+              }}
+              className="w-full md:max-w-sm border-2 border-purple-500"
+            />
+
+            <Select
+              value={status}
+              key={key}
+              onValueChange={value => setStatus(value)}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+              </SelectContent>
+              <SelectSeparator />
+              <Button
+                className="w-[180px] px-2"
+                variant="destructive"
+                size="sm"
+                onClick={e => {
+                  e.stopPropagation();
+                  setStatus(undefined);
+                  setSearch("");
+                  setKey(+new Date());
+                }}
+              >
+                Clear
+              </Button>
+            </Select>
+          </div>
+
           {/* <ScrollArea className="rounded-md border h-[calc(80vh-220px)] "> */}
           <Table className="relative rounded-md border w-full ">
             <TableHeader>
@@ -483,7 +538,7 @@ export default function AdminTable() {
               {table.getState().pagination.pageIndex *
                 table.getState().pagination.pageSize +
                 1}{" "}
-              to {table.getFilteredRowModel().rows.length} rows.
+              to {total} rows.
             </div>
             <div className="flex items-center space-x-4 lg:space-x-8">
               <div className="flex items-center space-x-2">

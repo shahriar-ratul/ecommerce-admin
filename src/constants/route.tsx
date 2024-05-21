@@ -51,7 +51,7 @@ export const mainRoutes: SidebarNavItem[] = [
     icon: <Folder width="20" height="20" />,
     submenu: true,
     subMenuItems: [
-      { title: "Users", path: "/user/users" },
+      { title: "Admins", path: "/user/admins" },
       { title: "Roles", path: "/user/roles" },
       { title: "Permissions", path: "/user/permissions" }
     ]

@@ -62,7 +62,7 @@ const LoginComponent = () => {
     const res: SignInResponse | undefined = await signIn("credentials", {
       username: username,
       password: password,
-      redirect: false
+      redirect: true
     });
 
     if (!res) {

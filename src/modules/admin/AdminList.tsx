@@ -21,12 +21,12 @@ export default function AdminList() {
           <BreadCrumb items={breadcrumbItems} />
           <div className="flex items-start justify-between">
             <Heading
-              title={`Admin List`}
+              title={`Admins List`}
               description="Manage (Server side table functionalities.)"
             />
 
             <Link
-              href={"/admin/create"}
+              href={"/user/admins/create"}
               className={cn(buttonVariants({ variant: "default" }))}
             >
               <Plus className="mr-2 h-4 w-4" /> Add New

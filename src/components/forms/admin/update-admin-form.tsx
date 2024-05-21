@@ -67,6 +67,7 @@ import { countries } from "@/constants/country";
 import { Checkbox } from "@/components/ui/checkbox";
 import { type RoleModel } from "@/schema/RoleSchema";
 import Loader from "@/components/loader/loader";
+import { type AdminModel } from "@/schema/AdminSchema";
 
 const formSchema = z.object({
   firstName: z
@@ -80,9 +81,7 @@ const formSchema = z.object({
     .min(3, { message: "username must be at least 3 characters" }),
   email: z.string().email({ message: "Please enter a valid email" }),
   phone: z.string().min(1, { message: "Please enter a valid phone number" }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters" }),
+  password: z.string().optional(),
 
   country: z.string().min(2, {
     message: "country must be at least 2 characters."
@@ -124,7 +123,11 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const CreateAdminForm = () => {
+interface PropData {
+  item: AdminModel;
+}
+
+export const UpdateAdminForm = ({ item }: PropData) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -202,8 +205,8 @@ export const CreateAdminForm = () => {
     city: "",
     state: "",
     zipCode: "",
-    dob: undefined,
-    joinedDate: undefined,
+    dob: item.dob ? new Date(item.dob) : undefined,
+    joinedDate: item.joinedDate ? new Date(item.joinedDate) : undefined,
     roles: [],
     isActive: true
   };
@@ -239,6 +242,68 @@ export const CreateAdminForm = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (item) {
+      if (item.firstName) {
+        form.setValue("firstName", item.firstName);
+      }
+
+      if (item.lastName) {
+        form.setValue("lastName", item.lastName);
+      }
+
+      form.setValue("username", item.username);
+      form.setValue("email", item.email);
+      form.setValue("phone", item.phone);
+
+      if (item.addressLine1) {
+        form.setValue("addressLine1", item.addressLine1);
+      }
+
+      if (item.addressLine2) {
+        form.setValue("addressLine2", item.addressLine2);
+      }
+
+      if (item.city) {
+        form.setValue("city", item.city);
+      }
+
+      if (item.state) {
+        form.setValue("state", item.state);
+      }
+
+      if (item.country) {
+        form.setValue("country", item.country);
+      }
+
+      if (item.zipCode) {
+        form.setValue("zipCode", item.zipCode);
+      }
+
+      if (item.dob) {
+        form.setValue("dob", item.dob);
+      }
+
+      if (item.joinedDate) {
+        form.setValue("joinedDate", item.joinedDate);
+      }
+
+      if (item.isActive) {
+        form.setValue("isActive", item.isActive);
+      }
+
+      if (item.roles) {
+        const roles = item.roles.map(item => {
+          return {
+            label: item.role.name,
+            value: Number(item.roleId)
+          };
+        });
+        form.setValue("roles", roles);
+      }
+    }
+  }, [item]);
+
   const onSubmit = async (data: FormValues) => {
     console.log("data", data);
     // return;
@@ -272,7 +337,7 @@ export const CreateAdminForm = () => {
       formData.append("username", username);
       formData.append("email", email);
       formData.append("phone", phone);
-      formData.append("password", password);
+  
       formData.append("roles", JSON.stringify(rolesArray));
 
       formData.append("city", city);
@@ -281,6 +346,10 @@ export const CreateAdminForm = () => {
       formData.append("zipCode", zipCode);
 
       formData.append("isActive", JSON.stringify(isActive));
+
+      if (password) {
+          formData.append("password", password);
+      }
 
       if (addressLine1) {
         formData.append("addressLine1", addressLine1);
@@ -867,6 +936,17 @@ export const CreateAdminForm = () => {
                         </p>
                       </li>
                     ))}
+                    {item.photo && (
+                      <li>
+                        <Image
+                          src={item.photo}
+                          alt={item.photo}
+                          width={100}
+                          height={100}
+                          className="h-full w-full object-contain rounded-md"
+                        />
+                      </li>
+                    )}
                   </ul>
 
                   {/* Rejected Files */}

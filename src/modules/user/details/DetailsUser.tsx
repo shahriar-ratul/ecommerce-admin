@@ -139,7 +139,7 @@ export default function DetailsUser({ id }: any) {
                       <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
                       <div className="space-y-1">
                         <p className="text-sm font-medium leading-none">
-                          Nationality : {item.nationality}
+                          country : {item.country}
                         </p>
                       </div>
                     </div>
@@ -158,7 +158,7 @@ export default function DetailsUser({ id }: any) {
 
             <CardContent>
               <h3 className="title text-lg font-semibold text-neutral-600 mt-10 border-b pb-3">
-                {item?.documentType} Documents
+                Documents
               </h3>
               <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-10">
                 {item?.uploads.map(file => (

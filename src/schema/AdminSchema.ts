@@ -5,24 +5,20 @@ export const Admin = z.object({
     firstName: z.null(),
     lastName: z.null(),
     dob: z.null(),
+    joinedDate: z.null(),
     username: z.string(),
     email: z.string(),
     phone: z.string(),
-    isVerified: z.boolean(),
     isActive: z.boolean(),
     photo: z.null(),
-    verifiedAt: z.null(),
-    createdAt: z.string(),
-    updatedAt: z.string(),
-    telegramName: z.null(),
     addressLine1: z.null(),
     addressLine2: z.null(),
     city: z.null(),
     state: z.null(),
-    nationality: z.null(),
+    country: z.null(),
     zipCode: z.null(),
-    documentType: z.null(),
-    walletBalance: z.number(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
     deleted: z.boolean(),
     deletedBy: z.null(),
     deletedAt: z.null(),
@@ -61,50 +57,7 @@ export const Admin = z.object({
 
 export const AdminData = z.object({
     items: z.array(
-        z.object({
-            id: z.number(),
-            firstName: z.null(),
-            lastName: z.null(),
-            dob: z.null(),
-            username: z.string(),
-            email: z.string(),
-            phone: z.string(),
-            isVerified: z.boolean(),
-            isActive: z.boolean(),
-            photo: z.null(),
-            verifiedAt: z.null(),
-            createdAt: z.string(),
-            updatedAt: z.string(),
-            telegramName: z.null(),
-            addressLine1: z.null(),
-            addressLine2: z.null(),
-            city: z.null(),
-            state: z.null(),
-            nationality: z.null(),
-            zipCode: z.null(),
-            documentType: z.null(),
-            walletBalance: z.number(),
-            deleted: z.boolean(),
-            deletedBy: z.null(),
-            deletedAt: z.null(),
-            roles: z.array(
-                z.object({
-                    roleId: z.number(),
-                    adminId: z.number(),
-                    createdAt: z.string(),
-                    updatedAt: z.string(),
-                    role: z.object({
-                        id: z.number(),
-                        name: z.string(),
-                        slug: z.string(),
-                        description: z.string(),
-                        isActive: z.boolean(),
-                        createdAt: z.string(),
-                        updatedAt: z.string()
-                    })
-                })
-            )
-        })
+        Admin
     ),
     meta: z.object({
         page: z.number(),

@@ -12,8 +12,8 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useState } from "react";
 
-const breadcrumbItems = [{ title: "User", link: "/user/verification" }];
-export default function DetailsVerification({ id }: any) {
+const breadcrumbItems = [{ title: "Admins", link: "/user/admins" }];
+export default function DetailsAdmin({ id }: any) {
   const session = useSession();
 
   const [item, SetItem] = useState<AdminModel | null>(null);
@@ -22,12 +22,12 @@ export default function DetailsVerification({ id }: any) {
     axios.defaults.headers.common["Authorization"] =
       `Bearer ${session.data?.user.accessToken}`;
 
-    const { data } = await axios.get(`/api/v1/users-verify/${id}`);
+    const { data } = await axios.get(`/api/v1/admins/${id}`);
     return data;
   };
 
   const { isLoading, isError, error, isFetching } = useQuery<boolean, any>({
-    queryKey: ["verification-list", id],
+    queryKey: ["admins-list", id],
     queryFn: async () => {
       const { data } = await fetchData();
 
@@ -36,14 +36,6 @@ export default function DetailsVerification({ id }: any) {
       return true;
     }
   });
-
-  // useEffect(() => {
-
-  //   if (item) {
-
-  //     SetItem(item);
-  //   }
-  // }, [item]);
 
   return (
     <>
@@ -54,7 +46,7 @@ export default function DetailsVerification({ id }: any) {
           <BreadCrumb items={breadcrumbItems} />
           <div className="flex items-start justify-between">
             <Heading
-              title={`Verification Details`}
+              title={`User Details`}
               description="Manage (Server side table functionalities.)"
             />
           </div>
@@ -75,7 +67,7 @@ export default function DetailsVerification({ id }: any) {
                       <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
                       <div className="space-y-1">
                         <p className="text-sm font-medium leading-none">
-                          Name : {item.firstName} {item.lastName}
+                          Name : {item.firstName}
                         </p>
                       </div>
                     </div>
@@ -107,7 +99,7 @@ export default function DetailsVerification({ id }: any) {
                       <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
                       <div className="space-y-1">
                         <p className="text-sm font-medium leading-none">
-                          Address Line 1 : {item.addressLine1}
+                          Address: {item.addressLine1}
                         </p>
                       </div>
                     </div>
@@ -115,49 +107,25 @@ export default function DetailsVerification({ id }: any) {
                       <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
                       <div className="space-y-1">
                         <p className="text-sm font-medium leading-none">
-                          Address Line 2 : {item.addressLine2}
+                          Country : {item.country}
                         </p>
                       </div>
                     </div>
-                    <div className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                      <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium leading-none">
-                          Address Line 2 : {item.addressLine2}
-                        </p>
-                      </div>
+                  </div>
+                  <div className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
+                    <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        City : {item.city}
+                      </p>
                     </div>
-                    <div className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                      <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium leading-none">
-                          City : {item.city}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                      <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium leading-none">
-                          State: {item.state}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                      <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium leading-none">
-                          Nationality : {item.nationality}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-                      <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium leading-none">
-                          zipCode : {item.zipCode}
-                        </p>
-                      </div>
+                  </div>
+                  <div className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
+                    <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        Post Code: {item.zipCode}
+                      </p>
                     </div>
                   </div>
                 </>
@@ -166,30 +134,29 @@ export default function DetailsVerification({ id }: any) {
 
             <CardContent>
               <h3 className="title text-lg font-semibold text-neutral-600 mt-10 border-b pb-3">
-                {item?.documentType} Documents
+                Photo
               </h3>
               <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-10">
-                {item?.uploads.map(file => (
-                  <li
-                    key={file.fileName}
-                    className="relative h-32 rounded-md shadow-lg"
-                  >
+                <li className="relative h-32 rounded-md shadow-lg">
+                  {item?.photo && (
                     <Image
-                      src={file.url}
-                      alt={file.fileName}
+                      src={item?.photo}
+                      alt={item?.photo}
                       width={100}
                       height={100}
                       onLoad={() => {
-                        URL.revokeObjectURL(file.url);
+                        if (item?.photo) {
+                          URL.revokeObjectURL(item?.photo as string);
+                        }
                       }}
                       className="h-full w-full object-contain rounded-md"
                     />
+                  )}
 
-                    <p className="mt-2 text-neutral-500 text-[12px] font-medium">
-                      {file.fileName}
-                    </p>
-                  </li>
-                ))}
+                  <p className="mt-2 text-neutral-500 text-[12px] font-medium">
+                    {item?.photo}
+                  </p>
+                </li>
               </ul>
             </CardContent>
           </Card>

@@ -7,8 +7,8 @@ import { Separator } from "@/components/ui/separator";
 import { CreateAdminForm } from "@/components/forms/admin/create-admin-form";
 
 const breadcrumbItems = [
-  { title: "Admins", link: "/admin" },
-  { title: "New Admin", link: "/admin/create" }
+  { title: "Admins", link: "/user/admins" },
+  { title: "New Admin", link: "/user/admins/create" }
 ];
 export default function AddAdmin() {
   return (
@@ -16,10 +16,7 @@ export default function AddAdmin() {
       <div className="flex-1 space-y-4  p-4 md:p-8 pt-6">
         <BreadCrumb items={breadcrumbItems} />
         <div className="flex items-start justify-between">
-          <Heading
-            title={`Add New Admin`}
-            description="Create a new admin user."
-          />
+          <Heading title={`Add New Admin`} description="Create a new admin ." />
         </div>
         <Separator />
 
